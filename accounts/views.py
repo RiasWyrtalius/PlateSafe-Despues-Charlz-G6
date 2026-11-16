@@ -7,6 +7,9 @@ from django.views.decorators.http import require_POST
 
 from .forms import RegisterForm
 
+from .decorators import role_required
+from .models import User
+
 
 def register(request):
     if request.user.is_authenticated:
@@ -46,5 +49,17 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    # Temporary landing page; becomes role-based in issue #4
-    return render(request, "accounts/dashboard.html")
+    """Send each user to the dashboard for their role."""
+    if request.user.role == User.Role.KITCHEN:
+        return redirect("kitchen_dashboard")
+    return redirect("diner_dashboard")
+
+
+@role_required(User.Role.DINER)
+def diner_dashboard(request):
+    return render(request, "accounts/diner_dashboard.html")
+
+
+@role_required(User.Role.KITCHEN)
+def kitchen_dashboard(request):
+    return render(request, "accounts/kitchen_dashboard.html")

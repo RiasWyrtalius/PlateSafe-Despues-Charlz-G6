@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Diner Dashboard | PlateSafe{% endblock %}
+{% block content %}
+<h2>Diner Dashboard</h2>
+<p>Hello, {{ user.first_name|default:user.username }}! Manage your allergen information and Chef Cards here.</p>
+
+<div class="card">
+  <strong>🛡️ My Allergen Profile</strong>
+  <p>Select your allergens and set how severe each one is.</p>
+  <small>Coming soon</small>
+</div>
+<div class="card">
+  <strong>📋 Chef Cards</strong>
+  <p>Build multilingual cards that tell the kitchen how to prepare your food safely.</p>
+  <small>Coming soon</small>
+</div>
+<div class="card">
+  <strong>🔳 My QR Code</strong>
+  <p>Show this to restaurant staff so they can open your Chef Card.</p>
+  <small>Coming soon</small>
+</div>
+<div class="card">
+  <strong>📞 Emergency Contacts</strong>
+  <p>Add up to three contacts the kitchen can call in an emergency.</p>
+  <small>Coming soon</small>
+</div>
+{% endblock %}
