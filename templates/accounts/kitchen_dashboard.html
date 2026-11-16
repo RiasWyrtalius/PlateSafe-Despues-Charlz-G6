@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Kitchen Dashboard | PlateSafe{% endblock %}
+{% block content %}
+<h2>Kitchen Staff Dashboard</h2>
+<p>Hello, {{ user.first_name|default:user.username }}! Review diners' allergen requirements before preparing their dishes.</p>
+
+<div class="card">
+  <strong>📷 Scan Diner QR</strong>
+  <p>Scan a diner's QR code to open their Chef Card.</p>
+  <small>Coming soon</small>
+</div>
+<div class="card">
+  <strong>✅ Safety Checklist</strong>
+  <p>Tick off each allergen precaution before the dish goes out.</p>
+  <small>Coming soon</small>
+</div>
+<div class="card">
+  <strong>🕒 Verification Log</strong>
+  <p>See recent safety acknowledgments sent to diners.</p>
+  <small>Coming soon</small>
+</div>
+{% endblock %}
