@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}My Profile | PlateSafe{% endblock %}
+{% block content %}
+<h2>My Profile</h2>
+<div class="card">
+  {% if user.photo %}
+    <img src="{{ user.photo.url }}" alt="Profile photo" width="120" height="120" style="border-radius:50%;object-fit:cover">
+  {% else %}
+    <p><em>No profile photo yet.</em></p>
+  {% endif %}
+  <p><strong>Name:</strong> {{ user.get_full_name|default:"—" }}</p>
+  <p><strong>Username:</strong> {{ user.username }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+  <p><strong>Contact number:</strong> {{ user.contact_number|default:"—" }}</p>
+  <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+  <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+</div>
+<a href="{% url 'profile_edit' %}"><button type="button">Edit profile</button></a>
+{% endblock %}
