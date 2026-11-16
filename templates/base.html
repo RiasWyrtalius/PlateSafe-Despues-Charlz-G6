@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}PlateSafe{% endblock %}</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:1rem;background:#f7f7f5}
+  nav{display:flex;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid #ddd;margin-bottom:1rem}
+  nav .brand{font-weight:700;margin-right:auto}
+  .msg{padding:.6rem .8rem;border-radius:6px;margin-bottom:.5rem}
+  .success{background:#e3f6e8;color:#1d6b34}.error{background:#fde8e8;color:#9b1c1c}
+  .errorlist{color:#9b1c1c}
+  input,select{padding:.4rem;width:100%;box-sizing:border-box}
+  button{padding:.5rem 1rem;cursor:pointer}
+  .card{background:#fff;padding:1rem;border-radius:8px;margin-bottom:.75rem}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">PlateSafe</span>
+  <a href="{% url 'register' %}">Register</a>
+</nav>
+{% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}
+{% block content %}{% endblock %}
+</body>
+</html>
