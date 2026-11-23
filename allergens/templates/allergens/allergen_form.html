@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back" href="{% url 'allergens:profile' %}">‹ Your allergens</a>
+  <header class="ps-page__head">
+    <div>
+      <h1>{% if is_edit %}{{ item.allergen.allergen_name }}{% else %}Add an allergen{% endif %}</h1>
+      <p class="ps-muted">Severe and anaphylactic allergens add strict kitchen rules to your Chef Card automatically.</p>
+    </div>
+  </header>
+
+  <form method="post" class="ps-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="ps-form-errors">{% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}</div>
+    {% endif %}
+
+    {% if not is_edit %}
+      {% include "allergens/_field.html" with field=form.allergen %}
+      <p class="ps-divider">or</p>
+      {% include "allergens/_field.html" with field=form.custom_name %}
+    {% endif %}
+
+    <div class="ps-field{% if form.severity.errors %} ps-field--error{% endif %}">
+      <span class="ps-label">How serious is it? *</span>
+      <div class="ps-seg" role="radiogroup" aria-label="Severity">
+        {% for radio in form.severity %}
+          <label class="ps-seg__opt ps-seg__opt--{{ radio.data.value|lower }}">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+        {% endfor %}
+      </div>
+      {% for error in form.severity.errors %}<small class="ps-error">{{ error }}</small>{% endfor %}
+    </div>
+
+    {% include "allergens/_field.html" with field=form.notes %}
+
+    <div class="ps-form__actions">
+      <button type="submit" class="ps-btn ps-btn--primary ps-btn--block">{% if is_edit %}Save changes{% else %}Add allergen{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

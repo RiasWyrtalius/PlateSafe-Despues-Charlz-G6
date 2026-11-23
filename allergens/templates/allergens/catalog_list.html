@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-page__head">
+    <div>
+      <p class="ps-eyebrow">Admin · Allergen catalog</p>
+      <h1>Major allergens</h1>
+      <p class="ps-muted">Diners have created {{ custom_count }} custom allergen{{ custom_count|pluralize }}.</p>
+    </div>
+    <a class="ps-btn ps-btn--primary" href="{% url 'allergens:catalog_add' %}">+ Add allergen</a>
+  </header>
+  <table class="ps-table">
+    <thead><tr><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for allergen in allergens %}
+        <tr>
+          <td><strong>{{ allergen.allergen_name }}</strong></td>
+          <td>{% if allergen.is_active %}<span class="ps-status ps-status--active">Available</span>{% else %}<span class="ps-status ps-status--archived">Hidden</span>{% endif %}</td>
+          <td class="ps-actions">
+            <a href="{% url 'allergens:catalog_edit' allergen.pk %}">Edit</a>
+            <form method="post" action="{% url 'allergens:catalog_toggle' allergen.pk %}" class="ps-inline-form">
+              {% csrf_token %}
+              <button type="submit" class="ps-linkbtn">{% if allergen.is_active %}Hide{% else %}Make available{% endif %}</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3">No allergens yet. Run <code>python manage.py seed_allergens</code>.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
