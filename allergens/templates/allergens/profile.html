@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-page__head">
+    <div>
+      <h1>Your allergens</h1>
+      <p class="ps-muted">Pick everything you react to, then set how serious each one is. The kitchen sees exactly this.</p>
+    </div>
+  </header>
+
+  {% if items %}
+    <ul class="ps-list">
+      {% for item in items %}
+        <li class="ps-list__row">
+          <div>
+            <strong>{{ item.allergen.allergen_name }}</strong>
+            {% if item.allergen.allergen_type == "CUSTOM" %}<span class="ps-tag">Custom</span>{% endif %}
+            {% if item.notes %}<p class="ps-muted">{{ item.notes }}</p>{% endif %}
+          </div>
+          <span class="ps-badge ps-badge--{{ item.severity|lower }}">{{ item.get_severity_display }}</span>
+          <div class="ps-actions">
+            <a href="{% url 'allergens:edit' item.pk %}">Change severity</a>
+            <a class="ps-link-danger" href="{% url 'allergens:delete' item.pk %}">Remove</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="ps-empty">
+      <p>You haven't added any allergens yet. Add at least one before you build a Chef Card.</p>
+    </div>
+  {% endif %}
+
+  <a class="ps-addrow" href="{% url 'allergens:add' %}">
+    <span class="ps-addrow__icon" aria-hidden="true">+</span>
+    <span><strong>Add an allergen</strong><small>Pick from the list or add your own. You can add up to 10 of your own.</small></span>
+  </a>
+
+  <section class="ps-section">
+    <div class="ps-panel__head">
+      <h2 class="ps-section-title">Medical notes</h2>
+      <a class="ps-link" href="{% url 'allergens:notes_edit' %}">Edit</a>
+    </div>
+    <div class="ps-panel">
+      <dl>
+        <dt>Dietary notes</dt><dd>{{ profile.dietary_notes|default:"None added" }}</dd>
+        <dt>Medical flags</dt><dd>{{ profile.medical_flags|default:"None added" }}</dd>
+      </dl>
+    </div>
+  </section>
+
+  {% if is_admin %}
+    <p class="ps-muted" style="margin-top:16px">Admin: <a class="ps-link" href="{% url 'allergens:catalog' %}">manage the allergen catalog</a></p>
+  {% endif %}
+</div>
+{% endblock %}

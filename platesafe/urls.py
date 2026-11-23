@@ -8,4 +8,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", RedirectView.as_view(pattern_name="dashboard")),
     path("", include("accounts.urls")),
+    path("allergens/", include("allergens.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

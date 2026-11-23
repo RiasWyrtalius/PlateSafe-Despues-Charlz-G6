@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back" href="{% url 'allergens:catalog' %}">‹ Back to catalog</a>
+  <header class="ps-page__head">
+    <div>
+      <p class="ps-eyebrow">Admin · Allergen catalog</p>
+      <h1>{% if is_edit %}Edit allergen{% else %}Add a major allergen{% endif %}</h1>
+    </div>
+  </header>
+  <form method="post" class="ps-form" novalidate>
+    {% csrf_token %}
+    {% include "allergens/_field.html" with field=form.allergen_name %}
+    <label class="ps-check">{{ form.is_active }} <span>{{ form.is_active.label }}</span></label>
+    <div class="ps-form__actions" style="margin-top:18px">
+      <button type="submit" class="ps-btn ps-btn--primary">Save</button>
+      <a class="ps-btn" href="{% url 'allergens:catalog' %}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
