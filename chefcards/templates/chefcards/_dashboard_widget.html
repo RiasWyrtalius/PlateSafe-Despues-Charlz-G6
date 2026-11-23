@@ -1,0 +1,63 @@
+{% load static %}
+{% if show %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+{% if is_admin %}
+  <section class="ps-widget">
+    <h3>Chef Cards</h3>
+    <p class="ps-muted">{{ card_count }} card{{ card_count|pluralize }} in the system, {{ active_count }} active · {{ rule_count }} active kitchen rule{{ rule_count|pluralize }}.</p>
+    <div class="ps-widget__actions">
+      <a class="ps-btn ps-btn--primary" href="{% url 'chefcards:all_cards' %}">View all Chef Cards</a>
+      <a class="ps-btn" href="{% url 'chefcards:rules' %}">Rule library</a>
+    </div>
+  </section>
+{% elif active_card %}
+  {# Figma 01 Home: Chef Card ticket #}
+  <article class="ps-ticket" aria-label="Your active Chef Safety Card">
+    <div class="ps-ticket__band">
+      <div>
+        <h2>Chef Safety Card</h2>
+        <p>Version {{ active_card.version_no }}, active since {{ active_card.updated_at|date:"M j" }}</p>
+      </div>
+      <span class="ps-ticket__icon" aria-hidden="true">🎫</span>
+    </div>
+    <div class="ps-ticket__body">
+      <p class="ps-ticket__lead">Please make my meal without</p>
+      {% for item in items %}
+        <div class="ps-ticket__row">
+          <strong>{{ item.allergen.allergen_name }}</strong>
+          <span class="ps-badge ps-badge--{{ item.severity|lower }}">{{ item.get_severity_display }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="ps-perf" aria-hidden="true"></div>
+    <div class="ps-ticket__foot">
+      <span>{{ items|length }} allergen{{ items|length|pluralize }} and {{ rule_count }} kitchen rule{{ rule_count|pluralize }}</span>
+      <a class="ps-link" href="{% url 'chefcards:edit' active_card.pk %}">Edit card</a>
+    </div>
+  </article>
+{% else %}
+  <article class="ps-ticket" aria-label="Chef Safety Card">
+    <div class="ps-ticket__band">
+      <div>
+        <h2>Chef Safety Card</h2>
+        <p>{% if card_count %}You have {{ card_count }} card{{ card_count|pluralize }}, none active yet{% else %}Not built yet{% endif %}</p>
+      </div>
+      <span class="ps-ticket__icon" aria-hidden="true">🎫</span>
+    </div>
+    <div class="ps-ticket__body">
+      <p class="ps-ticket__lead" style="margin:0">
+        {% if has_allergens %}Turn your allergen profile into a card the kitchen can read at a glance.{% else %}Add your allergens first, then build your Chef Card.{% endif %}
+      </p>
+    </div>
+    <div class="ps-perf" aria-hidden="true"></div>
+    <div class="ps-ticket__foot">
+      {% if has_allergens %}
+        <a class="ps-link" href="{% url 'chefcards:create' %}">Build your Chef Card</a>
+      {% else %}
+        <a class="ps-link" href="{% url 'allergens:add' %}">Add allergens</a>
+      {% endif %}
+      {% if card_count %}<a class="ps-link" href="{% url 'chefcards:list' %}">All my cards</a>{% endif %}
+    </div>
+  </article>
+{% endif %}
+{% endif %}

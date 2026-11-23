@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-page__head">
+    <div>
+      <p class="ps-eyebrow">Kitchen · Chef Cards</p>
+      <h1>All Chef Cards</h1>
+    </div>
+    <a class="ps-btn" href="{% url 'chefcards:rules' %}">Rule library</a>
+  </header>
+
+  <nav class="ps-filters" aria-label="Filter by status">
+    <a class="ps-chip{% if not status %} ps-chip--on{% endif %}" href="?">All</a>
+    {% for value, label in statuses %}
+      <a class="ps-chip{% if status == value %} ps-chip--on{% endif %}" href="?status={{ value }}">{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  <table class="ps-table">
+    <thead><tr><th>Card</th><th>Owner</th><th>Status</th><th>Version</th><th>Rules</th><th>Updated</th></tr></thead>
+    <tbody>
+      {% for card in cards %}
+        <tr>
+          <td><a href="{% url 'chefcards:detail' card.pk %}">{{ card.card_title }}</a></td>
+          <td>{{ card.profile.user.get_username }}</td>
+          <td><span class="ps-status ps-status--{{ card.card_status|lower }}">{{ card.get_card_status_display }}</span></td>
+          <td>v{{ card.version_no }}</td>
+          <td>{{ card.card_rules.all|length }}</td>
+          <td>{{ card.updated_at|date:"M j, Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">No Chef Cards yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

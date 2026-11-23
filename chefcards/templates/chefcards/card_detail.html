@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back ps-no-print" href="{% if is_owner %}{% url 'chefcards:list' %}{% else %}{% url 'chefcards:all_cards' %}{% endif %}">‹ Back to cards</a>
+
+  <header class="ps-page__head ps-no-print">
+    <div>
+      <h1>{{ card.card_title }}</h1>
+      <p class="ps-muted">
+        <span class="ps-status ps-status--{{ card.card_status|lower }}">{{ card.get_card_status_display }}</span>
+        Updated {{ card.updated_at|date:"M j, Y g:i A" }}{% if not is_owner %} · Owner: {{ profile.user.get_username }}{% endif %}
+      </p>
+    </div>
+  </header>
+
+  <article class="ps-ticket" aria-label="Chef Safety Card">
+    <div class="ps-ticket__band">
+      <div>
+        <h2>Chef Safety Card</h2>
+        <p>Version {{ card.version_no }}{% if card.is_active %}, active{% else %}, {{ card.get_card_status_display|lower }}{% endif %}</p>
+      </div>
+      <span class="ps-ticket__icon" aria-hidden="true">🎫</span>
+    </div>
+    <div class="ps-ticket__body">
+      <p class="ps-ticket__lead">Please make my meal without</p>
+      {% for item in items %}
+        <div class="ps-ticket__row">
+          <strong>{{ item.allergen.allergen_name }}{% if item.notes %}<small>{{ item.notes }}</small>{% endif %}</strong>
+          <span class="ps-badge ps-badge--{{ item.severity|lower }}">{{ item.get_severity_display }}</span>
+        </div>
+      {% empty %}
+        <p class="ps-muted">No allergens in the profile.</p>
+      {% endfor %}
+    </div>
+    <div class="ps-perf" aria-hidden="true"></div>
+    <div class="ps-ticket__foot">
+      <span>{{ items|length }} allergen{{ items|length|pluralize }} and {{ card_rules|length }} kitchen rule{{ card_rules|length|pluralize }}</span>
+      {% if is_owner and card.card_status != "ARCHIVED" %}<a class="ps-link ps-no-print" href="{% url 'chefcards:edit' card.pk %}">Edit card</a>{% endif %}
+    </div>
+  </article>
+
+  {% if is_owner %}
+    <div class="ps-form__actions ps-no-print" style="margin-top:16px">
+      {% if card.card_status != "ACTIVE" %}
+        <form method="post" action="{% url 'chefcards:activate' card.pk %}" style="flex:1;display:flex">
+          {% csrf_token %}<button type="submit" class="ps-btn ps-btn--primary ps-btn--block">Activate this card</button>
+        </form>
+      {% endif %}
+      <button type="button" class="ps-btn" onclick="window.print()">Print</button>
+      {% if card.card_status != "ARCHIVED" %}
+        <form method="post" action="{% url 'chefcards:archive' card.pk %}" class="ps-inline-form">
+          {% csrf_token %}<button type="submit" class="ps-btn">Archive</button>
+        </form>
+      {% endif %}
+      <a class="ps-btn ps-link-danger" href="{% url 'chefcards:delete' card.pk %}">Delete</a>
+    </div>
+  {% endif %}
+
+  <section class="ps-section">
+    <h2 class="ps-section-title">Kitchen rules</h2>
+    {% if card_rules %}
+      <ul class="ps-dotlist">
+        {% for link in card_rules %}
+          <li><span>{{ link.rule.rule_text }}{% if link.is_auto_added %} <span class="ps-tag">Required</span>{% endif %}</span></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="ps-muted">No kitchen rules selected.</p>
+    {% endif %}
+  </section>
+
+  {% if card.special_instructions %}
+    <section class="ps-section">
+      <div class="ps-note"><span aria-hidden="true">📝</span><div><small>Note from the diner</small><p>{{ card.special_instructions }}</p></div></div>
+    </section>
+  {% endif %}
+
+  {% if profile.dietary_notes or profile.medical_flags %}
+    <section class="ps-section">
+      <h2 class="ps-section-title">Medical notes</h2>
+      <div class="ps-panel">
+        <dl>
+          {% if profile.dietary_notes %}<dt>Dietary notes</dt><dd>{{ profile.dietary_notes }}</dd>{% endif %}
+          {% if profile.medical_flags %}<dt>Medical flags</dt><dd><strong>{{ profile.medical_flags }}</strong></dd>{% endif %}
+        </dl>
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

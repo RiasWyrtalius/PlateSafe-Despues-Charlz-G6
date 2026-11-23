@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back" href="{% url 'chefcards:rules' %}">‹ Back to rule library</a>
+  <header class="ps-page__head">
+    <div>
+      <p class="ps-eyebrow">Kitchen · Rule library</p>
+      <h1>{% if is_edit %}Edit {{ rule.rule_code }}{% else %}Add a preparation rule{% endif %}</h1>
+    </div>
+  </header>
+  <form method="post" class="ps-form" novalidate>
+    {% csrf_token %}
+    {% include "allergens/_field.html" with field=form.rule_code %}
+    {% include "allergens/_field.html" with field=form.rule_text %}
+    {% include "allergens/_field.html" with field=form.rule_type %}
+    {% include "allergens/_field.html" with field=form.auto_min_severity %}
+    <label class="ps-check">{{ form.is_active }} <span>{{ form.is_active.label }}</span></label>
+    <div class="ps-form__actions" style="margin-top:18px">
+      <button type="submit" class="ps-btn ps-btn--primary">Save rule</button>
+      <a class="ps-btn" href="{% url 'chefcards:rules' %}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
