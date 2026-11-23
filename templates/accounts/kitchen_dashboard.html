@@ -1,25 +1,44 @@
 {% extends "base.html" %}
-{% load allergen_tags %}
+{% load static allergen_tags chefcard_tags %}
 {% block title %}Kitchen Dashboard | PlateSafe{% endblock %}
 {% block content %}
-<h2>Kitchen Staff Dashboard</h2>
-<p>Hello, {{ user.first_name|default:user.username }}! Review diners' allergen requirements before preparing their dishes.</p>
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-home__head">
+    <div>
+      <h1>{% time_greeting %}, {{ user.first_name|default:user.username }}</h1>
+      <p class="ps-muted">Kitchen staff dashboard</p>
+    </div>
+    <a class="ps-avatar" href="{% url 'profile' %}" aria-label="My profile">{% if user.first_name %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper }}{% endif %}</a>
+  </header>
 
-{% allergen_dashboard %}
+  <div class="ps-alert" role="note">
+    <span class="ps-alert__icon" aria-hidden="true">⚠️</span>
+    <div>
+      <strong>Check allergies before cooking</strong>
+      <p>Open the diner's Chef Card and follow every rule marked Required. Anaphylactic allergies can be life-threatening.</p>
+    </div>
+  </div>
 
-<div class="card">
-  <strong>📷 Scan Diner QR</strong>
-  <p>Scan a diner's QR code to open their Chef Card.</p>
-  <small>Coming soon</small>
-</div>
-<div class="card">
-  <strong>✅ Safety Checklist</strong>
-  <p>Tick off each allergen precaution before the dish goes out.</p>
-  <small>Coming soon</small>
-</div>
-<div class="card">
-  <strong>🕒 Verification Log</strong>
-  <p>See recent safety acknowledgments sent to diners.</p>
-  <small>Coming soon</small>
+  {% chefcard_dashboard %}
+  {% allergen_dashboard %}
+
+  <section class="ps-section">
+    <h2 class="ps-section-title" style="margin-bottom:12px">Coming next</h2>
+    <div class="ps-grid">
+      <div class="ps-panel ps-soon">
+        <span class="ps-soon__icon" aria-hidden="true">📷</span>
+        <div><strong>Scan diner QR</strong><p>Scan a diner's QR code to open their Chef Card.</p></div>
+      </div>
+      <div class="ps-panel ps-soon">
+        <span class="ps-soon__icon" aria-hidden="true">✅</span>
+        <div><strong>Safety checklist</strong><p>Tick off each allergen before the dish goes out.</p></div>
+      </div>
+      <div class="ps-panel ps-soon">
+        <span class="ps-soon__icon" aria-hidden="true">🕒</span>
+        <div><strong>Verification log</strong><p>See recent safety acknowledgments sent to diners.</p></div>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}
