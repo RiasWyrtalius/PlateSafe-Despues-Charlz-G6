@@ -1,0 +1,25 @@
+{% load static %}
+{% if show %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<section class="ps-widget">
+  {% if is_admin %}
+    <h3>Allergen catalog</h3>
+    <p class="ps-muted">{{ major_count }} major allergen{{ major_count|pluralize }} available to diners.</p>
+    <div class="ps-widget__actions"><a class="ps-btn" href="{% url 'allergens:catalog' %}">Manage catalog</a></div>
+  {% else %}
+    <h3>My allergen profile</h3>
+    {% if item_count %}
+      <div class="ps-widget__chips">
+        {% for item in items %}<span class="ps-badge ps-badge--{{ item.severity|lower }}">{{ item.allergen.allergen_name }}</span>{% endfor %}
+        {% if item_count > 4 %}<span class="ps-tag">+{{ item_count|add:"-4" }} more</span>{% endif %}
+      </div>
+    {% else %}
+      <p class="ps-muted">No allergens added yet.</p>
+    {% endif %}
+    <div class="ps-widget__actions">
+      <a class="ps-btn ps-btn--primary" href="{% url 'allergens:add' %}">Add allergen</a>
+      <a class="ps-btn" href="{% url 'allergens:profile' %}">View profile</a>
+    </div>
+  {% endif %}
+</section>
+{% endif %}
