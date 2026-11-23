@@ -1,16 +1,19 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}PlateSafe{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
 <style>
-  body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:1rem;background:#f7f7f5}
-  nav{display:flex;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid #ddd;margin-bottom:1rem}
-  nav .brand{font-weight:700;margin-right:auto}
-  .msg{padding:.6rem .8rem;border-radius:6px;margin-bottom:.5rem}
-  .success{background:#e3f6e8;color:#1d6b34}.error{background:#fde8e8;color:#9b1c1c}
-  .errorlist{color:#9b1c1c}
-  input,select{padding:.4rem;width:100%;box-sizing:border-box}
+  body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;max-width:720px;margin:0 auto;padding:1rem;background:#f3f1f8;color:#1c1733}
+  nav{display:flex;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid #e2dfec;margin-bottom:1rem;flex-wrap:wrap}
+  nav a{color:#1c1733;text-decoration:none;font-weight:600}
+  nav .brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.2rem;margin-right:auto;color:#3b1a99}
+  .msg{padding:.6rem .8rem;border-radius:10px;margin-bottom:.5rem}
+  .success{background:#e3f4ea;color:#1d6b45}.error{background:#fde1e5;color:#b50e2a}.warning{background:#fff0c7;color:#8f5d00}.info{background:#ece5ff;color:#3b1a99}
+  .errorlist{color:#b50e2a}
+  input:not([type=checkbox]):not([type=radio]),select{padding:.4rem;width:100%;box-sizing:border-box}
   button{padding:.5rem 1rem;cursor:pointer}
   .card{background:#fff;padding:1rem;border-radius:8px;margin-bottom:.75rem}
 </style>
@@ -20,6 +23,7 @@
   <span class="brand">PlateSafe</span>
   {% if user.is_authenticated %}
     <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'allergens:profile' %}">Allergens</a>
     <a href="{% url 'profile' %}">Profile</a>
     <form method="post" action="{% url 'logout' %}" style="margin:0">
       {% csrf_token %}
