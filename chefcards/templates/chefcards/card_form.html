@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back" href="{% if is_edit %}{% url 'chefcards:detail' card.pk %}{% else %}{% url 'chefcards:list' %}{% endif %}">‹ Back</a>
+  <header class="ps-page__head">
+    <div>
+      <h1>{% if is_edit %}Edit your Chef Card{% else %}Build your Chef Card{% endif %}</h1>
+      <p class="ps-muted">Tell the kitchen how to handle your food. Rules for severe allergens are added for you.</p>
+      {% if is_edit and card.is_active %}<p class="ps-error">This card is active. Changing its rules makes a new version and puts it back in draft.</p>{% endif %}
+    </div>
+  </header>
+
+  <form method="post" class="ps-form--plain" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="ps-form-errors">{% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}</div>
+    {% endif %}
+
+    {% include "allergens/_field.html" with field=form.card_title %}
+
+    <div class="ps-field">
+      <span class="ps-label">Allergens on this card</span>
+      <div class="ps-widget__chips">
+        {% for item in items %}<span class="ps-badge ps-badge--{{ item.severity|lower }}">{{ item.allergen.allergen_name }} · {{ item.get_severity_display }}</span>{% endfor %}
+      </div>
+      <small class="ps-help">From your allergen profile. <a class="ps-link" href="{% url 'allergens:profile' %}">Edit allergens</a></small>
+    </div>
+
+    <section class="ps-section">
+      <h2 class="ps-section-title">Kitchen rules</h2>
+
+      {% if auto_rules %}
+        <div class="ps-rulebox">
+          <div class="ps-rulebox__head"><span aria-hidden="true">🔒</span> Always on for your severe allergens</div>
+          {% for a in auto_rules %}
+            <div class="ps-rule">
+              <span class="ps-rule__check" aria-hidden="true">✓</span>
+              <span class="ps-rule__text">{{ a.rule.rule_text }}<small>For {{ a.reasons|join:", " }}</small></span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="ps-rulebox" style="margin-top:12px">
+        {% for checkbox in form.selected_rules %}
+          <label class="ps-rule" for="{{ checkbox.id_for_label }}">
+            <span class="ps-rule__text">{{ checkbox.choice_label }}</span>
+            {{ checkbox.tag }}
+          </label>
+        {% empty %}
+          <div class="ps-rule"><span class="ps-muted">No optional rules available.</span></div>
+        {% endfor %}
+      </div>
+      {% for error in form.selected_rules.errors %}<small class="ps-error">{{ error }}</small>{% endfor %}
+    </section>
+
+    <section class="ps-section">
+      <h2 class="ps-section-title">Note to the chef</h2>
+      <div style="margin-top:12px">{% include "allergens/_field.html" with field=form.special_instructions %}</div>
+    </section>
+
+    <div class="ps-form__actions">
+      <a class="ps-btn" href="{% if is_edit %}{% url 'chefcards:detail' card.pk %}{% else %}{% url 'chefcards:list' %}{% endif %}">Cancel</a>
+      <button type="submit" class="ps-btn ps-btn--primary" style="flex:1">{% if is_edit %}Save card{% else %}Create card{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

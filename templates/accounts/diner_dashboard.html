@@ -1,27 +1,35 @@
 {% extends "base.html" %}
+{% load static allergen_tags chefcard_tags %}
 {% block title %}Diner Dashboard | PlateSafe{% endblock %}
 {% block content %}
-<h2>Diner Dashboard</h2>
-<p>Hello, {{ user.first_name|default:user.username }}! Manage your allergen information and Chef Cards here.</p>
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  {% has_active_card as card_ready %}
+  <header class="ps-home__head">
+    <div>
+      <h1>{% time_greeting %}, {{ user.first_name|default:user.username }}</h1>
+      <p class="ps-muted">{% if card_ready %}Your Chef Card is ready to show.{% else %}Let's get your Chef Card ready.{% endif %}</p>
+    </div>
+    <a class="ps-avatar" href="{% url 'profile' %}" aria-label="My profile">{% if user.first_name %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper }}{% endif %}</a>
+  </header>
 
-<div class="card">
-  <strong>🛡️ My Allergen Profile</strong>
-  <p>Select your allergens and set how severe each one is.</p>
-  <small>Coming soon</small>
-</div>
-<div class="card">
-  <strong>📋 Chef Cards</strong>
-  <p>Build multilingual cards that tell the kitchen how to prepare your food safely.</p>
-  <small>Coming soon</small>
-</div>
-<div class="card">
-  <strong>🔳 My QR Code</strong>
-  <p>Show this to restaurant staff so they can open your Chef Card.</p>
-  <small>Coming soon</small>
-</div>
-<div class="card">
-  <strong>📞 Emergency Contacts</strong>
-  <p>Add up to three contacts the kitchen can call in an emergency.</p>
-  <small>Coming soon</small>
+  {% chefcard_dashboard %}
+
+  <div class="ps-home__qr">
+    <button type="button" class="ps-btn ps-btn--primary ps-btn--block" disabled>Show QR to kitchen</button>
+    <p class="ps-muted ps-center">Coming in the next update. Each code will work for 12 hours, then refresh.</p>
+  </div>
+
+  <section class="ps-section">
+    {% allergen_dashboard %}
+  </section>
+
+  <section class="ps-section">
+    <h2 class="ps-section-title" style="margin-bottom:12px">Emergency contact</h2>
+    <div class="ps-panel ps-soon">
+      <span class="ps-soon__icon" aria-hidden="true">📞</span>
+      <div><strong>Add up to three contacts <span class="ps-tag">Coming soon</span></strong><p>The kitchen sees your primary contact if you have a reaction.</p></div>
+    </div>
+  </section>
 </div>
 {% endblock %}

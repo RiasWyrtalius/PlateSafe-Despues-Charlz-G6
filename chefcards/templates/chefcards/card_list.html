@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-page__head">
+    <div>
+      <h1>My Chef Cards</h1>
+      <p class="ps-muted">Only one card can be active at a time. That's the one the kitchen sees.</p>
+    </div>
+    {% if allergen_count %}
+      <a class="ps-btn ps-btn--primary" href="{% url 'chefcards:create' %}">+ New Chef Card</a>
+    {% endif %}
+  </header>
+
+  {% if not allergen_count %}
+    <div class="ps-empty">
+      <p>Your allergen profile is empty. Add at least one allergen, then build your first Chef Card.</p>
+      <a class="ps-btn ps-btn--primary" href="{% url 'allergens:add' %}">Add an allergen</a>
+    </div>
+  {% elif cards %}
+    <div class="ps-cards">
+      {% for card in cards %}
+        <article class="ps-cardtile{% if card.card_status == 'ACTIVE' %} ps-cardtile--active{% endif %}">
+          <div><span class="ps-status ps-status--{{ card.card_status|lower }}">{{ card.get_card_status_display }}</span></div>
+          <h2><a href="{% url 'chefcards:detail' card.pk %}">{{ card.card_title }}</a></h2>
+          <p class="ps-cardtile__meta">Version {{ card.version_no }} · {{ card.card_rules.all|length }} rule{{ card.card_rules.all|length|pluralize }} · updated {{ card.updated_at|date:"M j, Y g:i A" }}</p>
+          <div class="ps-actions">
+            <a href="{% url 'chefcards:detail' card.pk %}">Preview</a>
+            {% if card.card_status != "ARCHIVED" %}<a href="{% url 'chefcards:edit' card.pk %}">Edit</a>{% endif %}
+            <a class="ps-link-danger" href="{% url 'chefcards:delete' card.pk %}">Delete</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="ps-empty">
+      <p>You don't have any Chef Cards yet.</p>
+      <a class="ps-btn ps-btn--primary" href="{% url 'chefcards:create' %}">Build your first card</a>
+    </div>
+  {% endif %}
+
+  {% if is_admin %}
+    <p class="ps-muted" style="margin-top:16px">Kitchen staff: <a href="{% url 'chefcards:all_cards' %}">all Chef Cards</a> · <a href="{% url 'chefcards:rules' %}">rule library</a></p>
+  {% endif %}
+</div>
+{% endblock %}

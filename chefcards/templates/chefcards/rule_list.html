@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <header class="ps-page__head">
+    <div>
+      <p class="ps-eyebrow">Kitchen · Rule library</p>
+      <h1>Preparation rules</h1>
+      <p class="ps-muted">Rules with an automatic severity are added to every card that has an allergen at that level.</p>
+    </div>
+    <a class="ps-btn ps-btn--primary" href="{% url 'chefcards:rule_add' %}">+ Add rule</a>
+  </header>
+  <table class="ps-table">
+    <thead><tr><th>Code</th><th>Instruction</th><th>Type</th><th>Automatic</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for rule in rules %}
+        <tr>
+          <td><code>{{ rule.rule_code }}</code></td>
+          <td>{{ rule.rule_text }}</td>
+          <td>{{ rule.get_rule_type_display }}</td>
+          <td>{% if rule.auto_min_severity %}<span class="ps-badge ps-badge--{{ rule.auto_min_severity|lower }}">{{ rule.get_auto_min_severity_display }}</span>{% else %}—{% endif %}</td>
+          <td>{% if rule.is_active %}<span class="ps-status ps-status--active">Active</span>{% else %}<span class="ps-status ps-status--archived">Inactive</span>{% endif %}</td>
+          <td class="ps-actions">
+            <a href="{% url 'chefcards:rule_edit' rule.pk %}">Edit</a>
+            <form method="post" action="{% url 'chefcards:rule_toggle' rule.pk %}" class="ps-inline-form">
+              {% csrf_token %}<button type="submit" class="ps-linkbtn">{% if rule.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">No rules yet. Run <code>python manage.py seed_rules</code>.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

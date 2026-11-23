@@ -180,3 +180,21 @@ label.ps-rule { cursor: pointer; align-items: center; }
   .ps-no-print { display: none !important; }
   .ps-ticket { box-shadow: none; border: 2px solid var(--ps-ink); }
 }
+
+
+/* Dashboards (Figma 01 Home) */
+.ps-home__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+.ps-home__head h1 { font: 700 26px/30px var(--ps-display); letter-spacing: -1px; margin: 0; }
+.ps-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--ps-brand-tint); color: var(--ps-brand-deep); display: grid; place-items: center; font: 700 15px var(--ps-font); text-decoration: none; flex: none; }
+.ps-center { text-align: center; }
+.ps-home__qr { margin-top: 20px; }
+.ps-home__qr .ps-muted { margin-top: 10px; }
+.ps-soon { display: flex; gap: 14px; align-items: flex-start; }
+.ps-soon__icon { width: 44px; height: 44px; border-radius: 50%; background: var(--ps-brand-tint); display: grid; place-items: center; font-size: 20px; flex: none; }
+.ps-soon strong { display: block; font-weight: 600; }
+.ps-soon p { margin: 2px 0 0; color: var(--ps-muted); font-size: 14px; line-height: 20px; }
+.ps-grid { display: grid; gap: 10px; }
+.ps-alert { display: flex; gap: 12px; padding: 16px; border-radius: var(--ps-radius); background: var(--ps-anaphylactic-bg); margin-bottom: 20px; }
+.ps-alert__icon { font-size: 24px; line-height: 1; }
+.ps-alert strong { display: block; font: 600 16px/24px var(--ps-font); color: var(--ps-anaphylactic-ink); }
+.ps-alert p { margin: 2px 0 0; font-size: 14px; line-height: 20px; color: #7a1020; }
