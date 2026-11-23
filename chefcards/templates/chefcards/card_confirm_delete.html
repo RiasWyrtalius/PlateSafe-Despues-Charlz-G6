@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'platesafe/platesafe.css' %}">
+<div class="ps-page">
+  <a class="ps-back" href="{% url 'chefcards:detail' card.pk %}">‹ Back to card</a>
+  <form method="post" class="ps-form">
+    {% csrf_token %}
+    <h1>Delete “{{ card.card_title }}”?</h1>
+    <p class="ps-muted">This permanently deletes the card and its rules. Your allergen profile is not affected.</p>
+    {% if card.is_active %}<p class="ps-error">This is your active card. The kitchen will no longer be able to see it.</p>{% endif %}
+    <div class="ps-form__actions">
+      <button type="submit" class="ps-btn ps-btn--danger">Delete card</button>
+      <a class="ps-btn" href="{% url 'chefcards:detail' card.pk %}">Keep it</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
