@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from .models import AllergenProfile
 
 # Role values that count as the back-office/admin role.
-ADMIN_ROLE_VALUES = {"ADMIN", "STAFF"}
+ADMIN_ROLE_VALUES = {"ADMIN", "STAFF", "KITCHEN"}
 
 
 def is_admin_user(user):
